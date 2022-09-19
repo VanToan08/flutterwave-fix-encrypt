@@ -56,12 +56,16 @@ class _RequestPinState extends State<RequestPin> {
                   margin: EdgeInsets.all(20),
                   width: double.infinity,
                   height: 50,
-                  child: RaisedButton(
+                  child: ElevatedButton(
                     onPressed: this._continuePayment,
-                    color: Colors.orangeAccent,
-                    child: Text(
-                      "CONTINUE PAYMENT",
-                      style: TextStyle(color: Colors.white),
+                    child: Container(
+                      color: Colors.orangeAccent,
+                      child: Center(
+                        child: Text(
+                          "CONTINUE PAYMENT",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
                     ),
                   ),
                 )
