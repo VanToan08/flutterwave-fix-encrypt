@@ -38,12 +38,16 @@ class _PayWithUssdButtonState extends State<PayWithUssdButton> {
                 width: double.infinity,
                 height: 50,
                 margin: EdgeInsets.fromLTRB(0, 50, 0, 0),
-                child: RaisedButton(
+                child: ElevatedButton(
                   onPressed: this._handlePayPressed,
-                  color: Colors.orange,
-                  child: Text(
-                    "PAY WITH USSD",
-                    style: TextStyle(color: Colors.white, fontSize: 15),
+                  child: Container(
+                    color: Colors.orange,
+                    child: Center(
+                      child: Text(
+                        "PAY WITH USSD",
+                        style: TextStyle(color: Colors.white, fontSize: 15),
+                      ),
+                    ),
                   ),
                 ),
               )

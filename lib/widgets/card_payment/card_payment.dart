@@ -172,12 +172,16 @@ class _CardPaymentState extends State<CardPayment>
                   width: double.infinity,
                   height: 45,
                   margin: EdgeInsets.fromLTRB(40, 20, 20, 40),
-                  child: RaisedButton(
+                  child: ElevatedButton(
                     onPressed: this._onCardFormClick,
-                    color: Colors.orangeAccent,
-                    child: Text(
-                      "PAY",
-                      style: TextStyle(color: Colors.white),
+                    child: Container(
+                      color: Colors.orangeAccent,
+                      child: Center(
+                        child: Text(
+                          "PAY",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -358,7 +362,7 @@ class _CardPaymentState extends State<CardPayment>
         textAlign: TextAlign.center,
       ),
     );
-    this._scaffoldKey.currentState?.showSnackBar(snackBar);
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   Future<void> _showLoading(String message) {
