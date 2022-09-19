@@ -25,19 +25,15 @@ class CardPayment extends StatefulWidget {
   _CardPaymentState createState() => _CardPaymentState();
 }
 
-class _CardPaymentState extends State<CardPayment>
-    implements CardPaymentListener {
+class _CardPaymentState extends State<CardPayment> implements CardPaymentListener {
   final _cardFormKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   BuildContext? loadingDialogContext;
 
-  final TextEditingController _cardNumberFieldController =
-      TextEditingController();
-  final TextEditingController _cardMonthFieldController =
-      TextEditingController();
-  final TextEditingController _cardYearFieldController =
-      TextEditingController();
+  final TextEditingController _cardNumberFieldController = TextEditingController();
+  final TextEditingController _cardMonthFieldController = TextEditingController();
+  final TextEditingController _cardYearFieldController = TextEditingController();
   final TextEditingController _cardCvvFieldController = TextEditingController();
 
   @override
@@ -69,10 +65,7 @@ class _CardPaymentState extends State<CardPayment>
                   width: double.infinity,
                   child: Text(
                     "Enter your card details",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold),
+                    style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),
                 Container(
@@ -161,9 +154,7 @@ class _CardPaymentState extends State<CardPayment>
                           fontSize: 20.0,
                         ),
                         controller: this._cardCvvFieldController,
-                        validator: (value) => value != null && value.isEmpty
-                            ? "cvv is required"
-                            : null,
+                        validator: (value) => value != null && value.isEmpty ? "cvv is required" : null,
                       ),
                     ),
                   ],
@@ -174,8 +165,8 @@ class _CardPaymentState extends State<CardPayment>
                   margin: EdgeInsets.fromLTRB(40, 20, 20, 40),
                   child: ElevatedButton(
                     onPressed: this._onCardFormClick,
+                    style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.orangeAccent)),
                     child: Container(
-                      color: Colors.orangeAccent,
                       child: Center(
                         child: Text(
                           "PAY",
@@ -197,8 +188,7 @@ class _CardPaymentState extends State<CardPayment>
     this._hideKeyboard();
     if (this._cardFormKey.currentState!.validate()) {
       final CardPaymentManager pm = this.widget._paymentManager;
-      FlutterwaveViewUtils.showConfirmPaymentModal(
-          this.context, pm.currency, pm.amount, this._makeCardPayment);
+      FlutterwaveViewUtils.showConfirmPaymentModal(this.context, pm.currency, pm.amount, this._makeCardPayment);
     }
   }
 
@@ -207,12 +197,7 @@ class _CardPaymentState extends State<CardPayment>
     this._showLoading(FlutterwaveConstants.INITIATING_PAYMENT);
 
     final ChargeCardRequest chargeCardRequest = ChargeCardRequest(
-        cardNumber: this
-            ._cardNumberFieldController
-            .value
-            .text
-            .trim()
-            .replaceAll(new RegExp(r"\s+"), ""),
+        cardNumber: this._cardNumberFieldController.value.text.trim().replaceAll(new RegExp(r"\s+"), ""),
         cvv: this._cardCvvFieldController.value.text.trim(),
         expiryMonth: this._cardMonthFieldController.value.text.trim(),
         expiryYear: this._cardYearFieldController.value.text.trim(),
@@ -226,11 +211,7 @@ class _CardPaymentState extends State<CardPayment>
 
     final client = http.Client();
 
-    this
-        .widget
-        ._paymentManager
-        .setCardPaymentListener(this)
-        .payWithCard(client, chargeCardRequest);
+    this.widget._paymentManager.setCardPaymentListener(this).payWithCard(client, chargeCardRequest);
   }
 
   String? _validateCardField(String? value) {
@@ -245,8 +226,7 @@ class _CardPaymentState extends State<CardPayment>
   void onRedirect(ChargeResponse chargeResponse, String url) async {
     this._closeDialog();
     final result = await Navigator.of(this.context).push(MaterialPageRoute(
-        builder: (context) => AuthorizationWebview(
-            Uri.encodeFull(url), this.widget._paymentManager.redirectUrl!)));
+        builder: (context) => AuthorizationWebview(Uri.encodeFull(url), this.widget._paymentManager.redirectUrl!)));
     if (result != null) {
       final bool hasError = result.runtimeType != " ".runtimeType;
       this._closeDialog();
@@ -275,8 +255,8 @@ class _CardPaymentState extends State<CardPayment>
   @override
   void onRequireAddress(ChargeResponse response) async {
     this._closeDialog();
-    final ChargeRequestAddress addressDetails = await Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => RequestAddress()));
+    final ChargeRequestAddress addressDetails =
+        await Navigator.of(context).push(MaterialPageRoute(builder: (context) => RequestAddress()));
     if (addressDetails != null) {
       this._showLoading(FlutterwaveConstants.VERIFYING_ADDRESS);
       this.widget._paymentManager.addAddress(addressDetails);
@@ -288,8 +268,7 @@ class _CardPaymentState extends State<CardPayment>
   @override
   void onRequirePin(ChargeResponse response) async {
     this._closeDialog();
-    final pin = await Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => RequestPin()));
+    final pin = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => RequestPin()));
     if (pin == null) return;
     this._showLoading(FlutterwaveConstants.AUTHENTICATING_PIN);
     this.widget._paymentManager.addPin(pin);
@@ -298,12 +277,10 @@ class _CardPaymentState extends State<CardPayment>
   @override
   void onRequireOTP(ChargeResponse response, String message) async {
     this._closeDialog();
-    final otp = await Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => RequestOTP(message)));
+    final otp = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => RequestOTP(message)));
     if (otp == null) return;
     this._showLoading(FlutterwaveConstants.VERIFYING);
-    final ChargeResponse chargeResponse =
-        await this.widget._paymentManager.addOTP(otp, response.data!.flwRef!);
+    final ChargeResponse chargeResponse = await this.widget._paymentManager.addOTP(otp, response.data!.flwRef!);
     this._closeDialog();
     if (chargeResponse.message == FlutterwaveConstants.CHARGE_VALIDATED) {
       this._showLoading(FlutterwaveConstants.VERIFYING);
@@ -314,8 +291,7 @@ class _CardPaymentState extends State<CardPayment>
     }
   }
 
-  void _handleTransactionVerification(
-      final ChargeResponse chargeResponse) async {
+  void _handleTransactionVerification(final ChargeResponse chargeResponse) async {
     final verifyResponse = await FlutterwaveAPIUtils.verifyPayment(
         chargeResponse.data!.flwRef!,
         http.Client(),
